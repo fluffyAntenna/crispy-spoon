@@ -1,6 +1,63 @@
+//DONE
+//12 DEC 2016
+//JACOB
+Basics laid down for Floor, Player, and Enemies
+Dungeon floor template created
+Player Movement
+
+//TODO
+//13 DEC 2016
+Lay out the attack algorithm / damage scheme
+Decide on the levels of weapons and armor
+Map drawing
+Room generation
+Enemies die and drop things
+
+//DONE
+//13 DEC 2016
+//JACOB
+Implemented a health tick to regenerate health every seven steps
+Implemented player's attack method
+Implemented enemy attack methods
+Added placeholder textures to reduce the ugliness of the game
+Created a placeholder icon
+
+//TODO
+//14 DEC 2016
+Map drawing
+Room generation
+Enemies die and drop things
+Implement battles
+More enemies
+INVINCIRAT
+
+//DONE
+//14 DEC 2016
+//JACOB
+Map now attempts to create rooms and adds them to the floor
+Amended the floor 'create' method. Now the floor only creates lists if it is going to fill them
+Created Invincirat
+Fixed the map drawing to make the player the center of the screen
+Fixed all drawing methods to have the player be the center of the screen
+Added an empty tile placeholder
+
+//TODO
+//15 DEC 2016
+Add doors to the room generation algorithm
+Flood fill generation of the rest of the map
+Enemy spawning
+Enemy movement
+Battles / collision detection
+
+//ALL TODO
 Dungeon generation
 Enemies
 Enemy Methods
 Player Methods
-Decide levels of armor and weapons
+--Decide levels of armor and weapons
 Sprites
+#Create icon
+#Name the game
+#BOSS FOR LEVEL ONE : INVINCIRAT
+Implement battles
+More enemies

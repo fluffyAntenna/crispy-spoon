@@ -1,0 +1,34 @@
+#TESTING ATTACKS
+for a in range(10):
+    if player.health > 0:
+        player.attack(rat)
+        player.attack(slime)
+    if rat.health > 0:
+        rat.attack(player)
+    if slime.health > 0:
+        slime.attack(player)
+    if player.health >= 0:
+        print "P:", player.health
+    if rat.health >= 0:
+        print "R:", rat.health
+    if slime.health >= 0:
+        print "S:", slime.health
+
+DEFINE THE TILESET
+basicTile = pygame.image.load("Assets/Tiles/BasicTile.png")
+
+TESTING FLOOR CREATION
+floor.create(30, 15)
+floor.printFloor()
+
+DRAWING PLAYER
+#drawFrom = (center[0] - player.spot[1], center[1] - player.spot[0]) #The Player should be the middle of the window
+#drawSpot = (drawFrom[0] + self.spot[1], drawFrom[1] + self.spot[0])
+#screen.blit(basicPlayer, (drawSpot[0] * 64, drawSpot[1] * 64))
+
+TESTING INVINCIRAT'S ATTACK
+while invincirat.health > 0:
+    player.attack(invincirat)
+    print "P:", player.health
+    invincirat.attack(player)
+    print "I:", invincirat.health
