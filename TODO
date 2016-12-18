@@ -1,3 +1,5 @@
+------------------------------------------------------------------------------------------------------------------------
+
 //DONE
 //12 DEC 2016
 //JACOB
@@ -12,6 +14,8 @@ Decide on the levels of weapons and armor
 Map drawing
 Room generation
 Enemies die and drop things
+
+------------------------------------------------------------------------------------------------------------------------
 
 //DONE
 //13 DEC 2016
@@ -31,6 +35,8 @@ Implement battles
 More enemies
 INVINCIRAT
 
+------------------------------------------------------------------------------------------------------------------------
+
 //DONE
 //14 DEC 2016
 //JACOB
@@ -49,6 +55,82 @@ Enemy spawning
 Enemy movement
 Battles / collision detection
 
+------------------------------------------------------------------------------------------------------------------------
+
+//DONE
+//15 DEC 2016
+//JACOB
+The maze generation creates passages
+Maze generation creates passages for all spots
+Debugged player movement
+Walls can stop the player
+Walls stopping has been commented for testing
+Listed the Enemy 'takeTurn' method
+Enemies attack the player when adjacent and move randomly through the maze
+Battles / collisions
+
+//TODO
+//16 DEC 2016
+Generate doors in the rooms to get through rooms
+Enemy spawning
+More intelligent enemy movement
+Enemy dying
+
+------------------------------------------------------------------------------------------------------------------------
+
+//DONE
+//16 DEC 2016
+//JACOB
+Created a webpage
+Added two days of entries
+
+//TODO
+//17 DEC 2016
+Reformat daily posts
+Generate doors in rooms
+Enemy spawning
+Intelligent movement
+Enemies dying / Dropping loot
+Drawing fog of war
+
+------------------------------------------------------------------------------------------------------------------------
+
+//DONE
+//17 DEC 2016
+//JACOB
+Generated doors for rooms in the dungeon
+Added a placeholder texture for the doors
+Uncommented wall collisions
+Added experience points
+
+//TODO
+//18 DEC 2016
+Create a working Windows executable
+Level ups
+Enemy spawning
+Intelligent movement
+Enemies dying / Dropping loot
+Drawing fog of war
+
+------------------------------------------------------------------------------------------------------------------------
+
+//DONE
+//18 DEC 2016
+//JACOB
+Enemies spawn randomly in the dungeon
+Player can only see a radius
+
+//TODO
+//19 DEC 2016
+Saving and loading
+Menus
+Intelligent movement
+Leveling up
+Enemies dropping loot
+Drawing fog of war correctly / Lighting
+
+------------------------------------------------------------------------------------------------------------------------
+
 //ALL TODO
 Dungeon generation
 Enemies
@@ -59,5 +141,7 @@ Sprites
 #Create icon
 #Name the game
 #BOSS FOR LEVEL ONE : INVINCIRAT
-Implement battles
+--Implement battles
 More enemies
+SOUND
+Menus
