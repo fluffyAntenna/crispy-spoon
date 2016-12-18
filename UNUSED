@@ -32,3 +32,64 @@ while invincirat.health > 0:
     print "P:", player.health
     invincirat.attack(player)
     print "I:", invincirat.health
+
+CREATING THE MAZE
+    '''
+            spots = []
+            if self.spaces[1][1] == "&":
+                spots.append((1,1))
+            elif self.spaces[3][1] == "&":
+                spots.append((3,1))
+            elif self.spaces[5][1] == "&":
+                spots.append((5,1))
+            elif self.spaces[1][3] == "&":
+                spots.append((1,3))
+            elif self.spaces[1][3] == "&":
+                spots.append((1,3))
+
+            while spots:
+                loc = spots[len(spots) - 1]
+                neighbors = []
+                neighborA = (loc[0] + 2, loc[1]) #The spot below
+                neighborB = (loc[0] - 2, loc[1]) #The spot above
+                neighborC = (loc[0], loc[1] - 2) #The spot to the right
+                neighborD = (loc[0], loc[1] + 2) #The spot to the left
+                #Check neighbors
+                if self.isValid(neighborA):
+                    neighbors.append(neighborA)
+                if self.isValid(neighborB):
+                    neighbors.append(neighborB)
+                if self.isValid(neighborC):
+                    neighbors.append(neighborC)
+                if self.isValid(neighborD):
+                    neighbors.append(neighborD)
+                #Pop the spot if it has no neighbors
+                if len(neighbors) == 0:
+                    spots.pop()
+                else:
+                    randSpot = random.randint(0, 4) % len(neighbors)
+                    if randSpot == 0:
+                        spots.append(neighbors[0])
+                        self.spaces[neighbors[0][0]][neighbors[0][1]] = "."
+                        mid = ((loc[0] + neighbors[0][0]) / 2, (loc[1] + neighbors[0][1]) / 2)
+                        self.spaces[mid[0]][mid[1]] = "."
+                    elif randSpot == 1:
+                        spots.append(neighbors[1])
+                        self.spaces[neighbors[1][0]][neighbors[1][1]] = "."
+                        mid = ((loc[0] + neighbors[1][0]) / 2, (loc[1] + neighbors[1][1]) / 2)
+                        self.spaces[mid[0]][mid[1]] = "."
+                    elif randSpot == 2:
+                        spots.append(neighbors[2])
+                        self.spaces[neighbors[2][0]][neighbors[2][1]] = "."
+                        mid = ((loc[0] + neighbors[2][0]) / 2, (loc[1] + neighbors[2][1]) / 2)
+                        self.spaces[mid[0]][mid[1]] = "."
+                    elif randSpot == 3:
+                        spots.append(neighbors[3])
+                        self.spaces[neighbors[3][0]][neighbors[3][1]] = "."
+                        mid = ((loc[0] + neighbors[3][0]) / 2, (loc[1] + neighbors[3][1]) / 2)
+                        self.spaces[mid[0]][mid[1]] = "."
+    '''
+
+FOR PYINSTALLER
+    if getattr(sys, 'frozen', False):
+        os.chdir(sys._MEIPASS)
