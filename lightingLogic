@@ -1,0 +1,7 @@
+Surrounded by three walls: light in a straight line
+Surrounded on two opposite sides: light in a straight line
+Walls form a corner with a wall diagonal to player: light in two straight lines
+Corridors form a T: light in three straight lines
+Else light until hits a door or wall
+
+USE RAYCASTING?

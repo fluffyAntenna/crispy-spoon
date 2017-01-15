@@ -119,6 +119,7 @@ Drawing fog of war
 //JACOB
 Enemies spawn randomly in the dungeon
 Player can only see a radius
+Started to implement modes for the game
 
 //TODO
 //19 DEC 2016
@@ -128,20 +129,233 @@ Intelligent movement
 Leveling up
 Enemies dropping loot
 Drawing fog of war correctly / Lighting
+Check the damage done by rats and slime, might be too low
+Should increase Invincirat's attack too
+Center the player on the screen
+Place stairs
+
+------------------------------------------------------------------------------------------------------------------------
+
+//DONE
+//19 DEC 12016
+//JACOB
+(You can tell I just watched the Kurzgesagt video)
+Recentered the player and the screen drawing
+
+//TODO
+//20 DEC 12016
+Saving and loading
+Menus
+Intelligent movement
+Leveling up
+Enemies dropping loot
+Drawing fog of war correctly / Lighting
+Check the damage done by rats and slime, might be too low
+Should increase Invincirat's attack too
+Place stairs
+
+------------------------------------------------------------------------------------------------------------------------
+
+//DONE
+//20 DEC 12016
+//JACOB
+Nothing got done today
+
+//TODO
+//21 DEC 12016
+Saving and loading
+Menus
+Intelligent movement
+Leveling up
+Enemies dropping loot
+Drawing fog of war correctly / Lighting
+Check the damage done by rats and slime, might be too low
+Should increase Invincirat's attack too
+Place stairs
+
+------------------------------------------------------------------------------------------------------------------------
+
+//DONE
+//21 DEC 2016
+//JACOB
+Increased all enemies attack to do at least one damage
+
+//TODO
+//22 DEC 12016
+Saving and loading
+Menus
+Intelligent movement
+Leveling up
+Enemies dropping loot
+Drawing fog of war correctly / Lighting
+Place stairs
+
+------------------------------------------------------------------------------------------------------------------------
+
+//DONE
+//22 DEC 12016
+//JACOB
+Played video games
+
+//TODO
+Saving and loading
+Menus
+Intelligent movement
+Leveling up
+Enemies dropping loot
+Drawing fog of war correctly / Lighting
+Place stairs
+
+------------------------------------------------------------------------------------------------------------------------
+
+//DONE
+//23 DEC 12016
+//JACOB
+Set the player's health back to full
+Level ups are based on the square of the player's level multiplied by five
+
+//TODO
+//24 DEC 12016
+Saving and loading
+Menus
+Intelligent movement
+Enemies dropping loot
+Drawing fog of war correctly / Lighting
+Place stairs
+Level progression
+
+------------------------------------------------------------------------------------------------------------------------
+
+//DONE
+//24 DEC 12016
+//JACOB
+Nada. Christmas Eve son.
+
+//TODO
+//25 DEC 12016
+Same thing we do every night, Pinky.
+
+------------------------------------------------------------------------------------------------------------------------
+
+//DONE
+//CHRISTMAS 12016
+//JACOB
+Added a system to keep track of the existing floors
+Added death rewards to Invincirat
+
+//TODO
+//26 DEC 12016
+Saving and loading
+Menus
+Intelligent movement
+Enemies dropping loot
+Drawing fog of war correctly / Lighting
+Place stairs
+Level progression
+
+------------------------------------------------------------------------------------------------------------------------
+
+//DONE
+//26 DEC 12016
+//JACOB
+Added stairs
+
+//TODO
+27 DEC 12016
+Saving and loading
+Menus
+Intelligent movement
+Enemies dropping loot
+Drawing fog of war correctly / Lighting
+Place stairs in rooms instead of hallways / Make stair generation part of room generation
+In room generation, if a room has no doors, erase it (all spaces because spaces have no attached tile)
+Level progression
+
+------------------------------------------------------------------------------------------------------------------------
+
+//DONE
+//27 DEC 12016
+//JACOB
+Implemented basic floor progressions
+Removed some test print statements for placing stairs
+
+//TODO
+//28 DEC 12016
+Saving and loading
+Menus
+Intelligent movement
+Enemies dropping loot
+Drawing fog of war correctly / Lighting / Ray casting?
+Place stairs in rooms instead of hallways / Make stair generation part of room generation
+In room generation, if a room has no doors, erase it (all spaces because spaces have no attached tile)
+
+------------------------------------------------------------------------------------------------------------------------
+
+//DONE
+//28 DEC 12016
+//JACOB
+Nothing. Watched Youtube, Netflix, and did Christmas shopping
+
+//TODO
+//29 DEC 12016
+Saving and loading
+Menus
+Intelligent movement
+Enemies dropping loot
+Drawing fog of war correctly / Lighting / Ray casting?
+Place stairs in rooms instead of hallways / Make stair generation part of room generation
+In room generation, if a room has no doors, erase it (all spaces because spaces have no attached tile)
+
+------------------------------------------------------------------------------------------------------------------------
+
+//DONE
+//29 DEC 12016
+//JACOB
+Took a break for the day. Didn't look at the code, didn't test it, never even opened Atom.
+
+//TODO
+//30 DEC 12016
+//OR SOME TIME IN THE FUTURE
+Saving and loading
+Menus
+Intelligent movement
+Enemies dropping loot
+Drawing fog of war correctly / Lighting / Ray casting?
+Place stairs in rooms instead of hallways / Make stair generation part of room generation
+In room generation, if a room has no doors, erase it (all spaces because spaces have no attached tile)
+
+------------------------------------------------------------------------------------------------------------------------
+
+//DONE
+//30 DEC 12016
+//JACOB
+Opened Atom to write down two days worth of nothing in the log.
+
+//TODO
+//FUTURE
+Saving and loading
+Menus
+Intelligent movement
+Enemies dropping loot
+Drawing fog of war correctly / Lighting / Ray casting?
+Place stairs in rooms instead of hallways / Make stair generation part of room generation
+In room generation, if a room has no doors, erase it (all spaces because spaces have no attached tile)
+
+------------------------------------------------------------------------------------------------------------------------
+
+//31 DEC 12016 - 6 JAN 12017
+Holidays. Spent no time working on it
 
 ------------------------------------------------------------------------------------------------------------------------
 
 //ALL TODO
-Dungeon generation
+??Dungeon generation
 Enemies
-Enemy Methods
-Player Methods
---Decide levels of armor and weapons
+--Enemy Methods
+--Player Methods
 Sprites
 #Create icon
 #Name the game
-#BOSS FOR LEVEL ONE : INVINCIRAT
---Implement battles
 More enemies
-SOUND
+Sounds and music
 Menus

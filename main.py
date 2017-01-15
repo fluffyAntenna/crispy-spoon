@@ -15,6 +15,7 @@ class Player(object):
     }
     level = 1
     exp = 0
+
     #Armor Tiers:
     #Cloth - Defense bonus: x1
     #Leather - Defense bonus: x1.5
@@ -36,7 +37,7 @@ class Player(object):
     def __init__(self, playerType):
         if playerType == "Warrior":
             self.type = "Warrior"
-            self.health = 15
+            self.health = 20
             self.maxHealth = 20
             self.evasion = .3
             self.strength = 10
@@ -76,11 +77,10 @@ class Player(object):
 
     #Define player drawing method
     def drawPlayer(self):
-        #pygame.draw.rect(screen, RED, [self.spot[1] * 64, self.spot[0] * 64, 64, 64])
-        center = (width / 2, height / 2) #Center spot in the window (x, y)
+        center = (width / 2 - 32, height / 2 - 32) #Center spot in the window (x, y)
         screen.blit(basicPlayer, (center[0], center[1]))
-        #screen.blit(basicPlayer, (self.spot[1] * 64, self.spot[0] * 64))
 
+    #Define a method to find if an enemy is adjacent in the attempted direction
     def findAdjacentEnemy(self, direction):
         for e in enemies:
             if direction == "up":
@@ -96,6 +96,18 @@ class Player(object):
                 if e.spot == (self.spot[0], self.spot[1] - 1):
                     return e
         return False
+
+    def spawnUp(self):
+        for r in range(len(floor.spaces)):
+            for c in range(len(floor.spaces[r])):
+                if floor.spaces[r][c] == "<":
+                    self.spot = (r, c)
+
+    def spawnDown(self):
+        for r in range(len(floor.spaces)):
+            for c in range(len(floor.spaces[r])):
+                if floor.spaces[r][c] == ">":
+                    self.spot = (r, c)
 
 ########################################################################################################################
 #Define Floor Class
@@ -120,7 +132,10 @@ class Floor(object):
                     self.spaces[i].append("&")
 
     def generate(self, x, y):
+        #Create a map template
         self.create(x,y)
+
+        #Create Rooms
         roomAttempts = (x * y) / 4
         for a in range(roomAttempts):
             rx = random.randint(0, x) #Random x placement
@@ -131,7 +146,7 @@ class Floor(object):
                 if self.checkRoom(rx, ry, rw, rh):
                     self.createRoom(rx, ry, rw, rh)
 
-        #Check again from other spots
+        #Recursive Backtracking to form the maze
         for r in range(len(self.spaces)):
             for c in range(len(self.spaces)):
                 spots = []
@@ -179,13 +194,30 @@ class Floor(object):
                             mid = ((loc[0] + neighbors[3][0]) / 2, (loc[1] + neighbors[3][1]) / 2)
                             self.spaces[mid[0]][mid[1]] = "."
 
-        #Set any straggling blocks
+        #Replace any missing blocks
         for r in range(len(self.spaces)):
             for s in range(len(self.spaces[r])):
                 if self.spaces[r][s] == "&":
                     self.spaces[r][s] = "."
                 elif self.spaces[r][s] == "#":
                     self.spaces[r][s] = "X"
+
+        #Create stairs
+        upPlaced = False
+        downPlaced = False
+        for r in range(len(self.spaces)):
+            for c in range(len(self.spaces[r])):
+                upStair = random.randint(0,50)
+                downStair = random.randint(0,50)
+                if upStair == 25 and upPlaced == False and self.spaces[r][c] == ".":
+                    self.spaces[r][c] = ">"
+                    upPlaced = True
+                if downStair == 25 and downPlaced == False and self.spaces[r][c] == ".":
+                    self.spaces[r][c] = "<"
+                    downPlaced = True
+
+        self.printFloor()
+
 
     #Define a space checking function
     def isValid(self, (y,x)):
@@ -298,22 +330,25 @@ class Floor(object):
     #Change # to X and & to . when map generation is finished
     def drawFloor(self):
         center = (width / 2, height / 2) #Center spot in the window (x, y)
-        drawFrom = (center[0] - (player.spot[1] * 64), center[1] - (player.spot[0] * 64)) #The Player should be the middle of the window
+        drawFrom = (center[0] - (player.spot[1] * 64) - 32, center[1] - (player.spot[0] * 64) - 32) #The Player should be the middle of the window
+
         for i in range(len(self.spaces)): #Rows / y values
             for j in range(len(self.spaces[i])): #Columns / x values
                 if self.distFromPlayer((i,j)) < 6:
                     drawSpot = (drawFrom[0] + (j * 64), drawFrom[1] + (i * 64))
                     if self.spaces[i][j] == "X":
-                        #pygame.draw.rect(screen, GREEN, [j * 64, i * 64, 64, 64])
                         screen.blit(basicWall, (drawSpot[0], drawSpot[1]))
-                        #screen.blit(basicWall, (j * 64, i * 64))
                     elif self.spaces[i][j] == ".":
-                        #pygame.draw.rect(screen, BLUE, [j * 64, i * 64, 64, 64])
                         screen.blit(basicTile, (drawSpot[0], drawSpot[1]))
-                        #screen.blit(basicTile, (j * 64, i * 64))
                     elif self.spaces[i][j] == "d":
                         screen.blit(basicTile, (drawSpot[0], drawSpot[1]))
                         screen.blit(basicDoor, (drawSpot[0], drawSpot[1]))
+                    elif self.spaces[i][j] == "<":
+                        screen.blit(basicTile, (drawSpot[0], drawSpot[1]))
+                        screen.blit(basicStairDown, (drawSpot[0], drawSpot[1]))
+                    elif self.spaces[i][j] == ">":
+                        screen.blit(basicTile, (drawSpot[0], drawSpot[1]))
+                        screen.blit(basicStairUp, (drawSpot[0], drawSpot[1]))
                     else:
                         screen.blit(basicEmpty, (drawSpot[0], drawSpot[1]))
 
@@ -371,7 +406,7 @@ class Slime(Enemy):
                 defenseMultiplier = 4
             elif other.inventory["Armor"] == "Adamantium":
                 defenseMultiplier = 5
-            other.health -= int(self.strength ** 2 / (other.defense * defenseMultiplier))
+            other.health -= int(self.strength ** 2 / (other.defense * defenseMultiplier)) + 1
 
     def distFromPlayer(self, (r, c)):
         return math.sqrt(((player.spot[1]) - c) ** 2 + ((player.spot[0]) - r) ** 2)
@@ -380,7 +415,7 @@ class Slime(Enemy):
     def draw(self):
         if self.distFromPlayer(self.spot) < 6:
             center = (width / 2, height / 2) #Center spot in the window (x, y)
-            drawFrom = (center[0] - (player.spot[1] * 64), center[1] - (player.spot[0] * 64)) #The Player should be the middle of the window
+            drawFrom = (center[0] - (player.spot[1] * 64) - 32, center[1] - (player.spot[0] * 64) - 32) #The Player should be the middle of the window
             drawSpot = (drawFrom[0] + (self.spot[1] * 64), drawFrom[1] + (self.spot[0] * 64))
             #pygame.draw.rect(screen, MAGENTA, [self.spot[1] * 64, self.spot[0] * 64, 64, 64])
             #screen.blit(basicSlime, (self.spot[1] * 64, self.spot[0] * 64))
@@ -459,7 +494,7 @@ class Rat(Enemy):
                 defenseMultiplier = 4
             elif other.inventory["Armor"] == "Adamantium":
                 defenseMultiplier = 5
-            other.health -= int(self.strength ** 2 / (other.defense * defenseMultiplier))
+            other.health -= int(self.strength ** 2 / (other.defense * defenseMultiplier)) + 1
 
     def distFromPlayer(self, (r, c)):
         return math.sqrt(((player.spot[1]) - c) ** 2 + ((player.spot[0]) - r) ** 2)
@@ -468,7 +503,7 @@ class Rat(Enemy):
     def draw(self):
         if self.distFromPlayer(self.spot) < 6:
             center = (width / 2, height / 2) #Center spot in the window (x, y)
-            drawFrom = (center[0] - (player.spot[1] * 64), center[1] - (player.spot[0] * 64)) #The Player should be the middle of the window
+            drawFrom = (center[0] - (player.spot[1] * 64) - 32, center[1] - (player.spot[0] * 64) - 32) #The Player should be the middle of the window
             drawSpot = (drawFrom[0] + (self.spot[1] * 64), drawFrom[1] + (self.spot[0] * 64))
             #pygame.draw.rect(screen, CYAN, [self.spot[1] * 64, self.spot[0] * 64, 64, 64])
             #screen.blit(basicRat, (self.spot[1] * 64, self.spot[0] * 64))
@@ -548,7 +583,7 @@ class Invincirat(Enemy):
                 defenseMultiplier = 4
             elif other.inventory["Armor"] == "Adamantium":
                 defenseMultiplier = 5
-            other.health -= int(self.strength ** 2 / (other.defense * defenseMultiplier))
+            other.health -= int(self.strength ** 2 / (other.defense * defenseMultiplier)) + 1
 
     def distFromPlayer(self, (r, c)):
         return math.sqrt(((player.spot[1]) - c) ** 2 + ((player.spot[0]) - r) ** 2)
@@ -557,7 +592,7 @@ class Invincirat(Enemy):
     def draw(self):
         if self.distFromPlayer(self.spot) < 6:
             center = (width / 2, height / 2) #Center spot in the window (x, y)
-            drawFrom = (center[0] - (player.spot[1] * 64), center[1] - (player.spot[0] * 64)) #The Player should be the middle of the window
+            drawFrom = (center[0] - (player.spot[1] * 64) - 32, center[1] - (player.spot[0] * 64) - 32) #The Player should be the middle of the window
             drawSpot = (drawFrom[0] + (self.spot[1] * 64), drawFrom[1] + (self.spot[0] * 64))
             #pygame.draw.rect(screen, CYAN, [self.spot[1] * 64, self.spot[0] * 64, 64, 64])
             #screen.blit(basicInvincirat, (self.spot[1] * 64, self.spot[0] * 64))
@@ -569,7 +604,40 @@ class Invincirat(Enemy):
 
     #Define dying for Invincirat
     def die(self):
+
+        #Increase Player's Exp
         player.exp += 15
+
+        #Upgrade Player's Weapon
+        if player.inventory["Weapon"] == "Wooden":
+            player.inventory["Weapon"] = "Stone"
+        elif player.inventory["Weapon"] == "Stone":
+            player.inventory["Weapon"] = "Iron"
+        elif player.inventory["Weapon"] == "Iron":
+            player.inventory["Weapon"] = "Steel"
+        elif player.inventory["Weapon"] == "Steel":
+            player.inventory["Weapon"] = "Mythril"
+        elif player.inventory["Weapon"] == "Mythril":
+            player.inventory["Weapon"] = "Adamantium"
+        elif player.inventory["Weapon"] == "Stone":
+            player.inventory["Weapon"] = "Iron"
+
+        #Upgrade Player's Armor
+        if player.inventory["Armor"] == "Cloth":
+            player.inventory["Armor"] = "Leather"
+        elif player.inventory["Armor"] == "Leather":
+            player.inventory["Armor"] = "Iron"
+        elif player.inventory["Armor"] == "Iron":
+            player.inventory["Armor"] = "Steel"
+        elif player.inventory["Armor"] == "Steel":
+            player.inventory["Armor"] = "Kevlar"
+        elif player.inventory["Armor"] == "Kevlar":
+            player.inventory["Armor"] = "Mythril"
+        elif player.inventory["Armor"] == "Mythril":
+            player.inventory["Armor"] = "Adamantium"
+
+        #Give the player 500 Gold
+        player.inventory["Gold"] += 500
 
     #Define a turn taking mechanism
     def takeTurn(self):
@@ -640,10 +708,13 @@ for i in range(2):
 #Set game mode
 #1 = Play
 #2 = Main Menu
-#3 = Lose
-#4 = Win
-#5 = Instructions
-#6 = Credits
+#3 = New Floor
+#4 = Lose
+#5 = Win
+#6 = Instructions
+#7 = Credits
+
+gameMode = 1
 
 #Game loop variable
 done = False
@@ -659,14 +730,21 @@ player = Player("Warrior")
 healthTick = 7
 
 #Set the game level
-level = 1
+floorLevel = 1
 
 #Generate the first level
 floor = Floor()
 floor.generate(30, 30)
 
+#Keep track of the existing floors
+floors = []
+floors.append(floor)
+
+#Spawn the player once the floor has been generated
+player.spawnUp()
+
 #Set maximum enemies
-maxEnemies = level * 3
+maxEnemies = floorLevel * 3
 
 #Create initial mobs
 enemies = []
@@ -682,19 +760,14 @@ for i in range(maxEnemies):
         rat.spawn()
         enemies.append(rat)
 
-#slime = Slime()
-#rat = Rat()
-#invincirat = Invincirat()
-#enemies.append(slime)
-#enemies.append(rat)
-#enemies.append(invincirat)
-
 #Define placeholder tileset
 #REPLACE
 basicTile = pygame.image.load("Assets/Placeholder/BasicTile.png")
 basicWall = pygame.image.load("Assets/Placeholder/BasicWall.png")
 basicEmpty = pygame.image.load("Assets/Placeholder/MossyWall.png")
 basicDoor = pygame.image.load("Assets/Placeholder/Door.png")
+basicStairUp = pygame.image.load("Assets/Placeholder/StairUp.png")
+basicStairDown = pygame.image.load("Assets/Placeholder/StairDown.png")
 
 #Define placeholder entities images
 basicRat = pygame.image.load("Assets/Placeholder/Rat.png")
@@ -713,95 +786,144 @@ pygame.display.flip()
 #Main Game Loop
 while not done:
     #Main Event Loop
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            done = True
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
+    if gameMode == 1: #Play the game
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 done = True
-            elif event.key == pygame.K_a: #Move left
-                eToAttack = player.findAdjacentEnemy("left")
-                if eToAttack:
-                    player.attack(eToAttack)
-                    print "Player attacks"
-                elif player.spot[1] - 1 >= 0 and (floor.spaces[player.spot[0]][player.spot[1] - 1] == "." or floor.spaces[player.spot[0]][player.spot[1] - 1] == "d"):
-                    player.spot = (player.spot[0], player.spot[1] - 1)
-            elif event.key == pygame.K_s: #Move down
-                eToAttack = player.findAdjacentEnemy("down")
-                if eToAttack:
-                    player.attack(eToAttack)
-                    print "Player attacks"
-                elif player.spot[0] + 1 < len(floor.spaces) and (floor.spaces[player.spot[0] + 1][player.spot[1]] == "." or floor.spaces[player.spot[0] + 1][player.spot[1]] == "d"):
-                    player.spot = (player.spot[0] + 1, player.spot[1])
-            elif event.key == pygame.K_d: #Move right
-                eToAttack = player.findAdjacentEnemy("right")
-                if eToAttack:
-                    player.attack(eToAttack)
-                    print "Player attacks"
-                elif player.spot[1] + 1 < len(floor.spaces[player.spot[0]]) and (floor.spaces[player.spot[0]][player.spot[1] + 1] == "." or floor.spaces[player.spot[0]][player.spot[1] + 1] == "d"):
-                    player.spot = (player.spot[0], player.spot[1] + 1)
-            elif event.key == pygame.K_w: #Move up
-                eToAttack = player.findAdjacentEnemy("up")
-                if eToAttack:
-                    player.attack(eToAttack)
-                    print "Player attacks"
-                elif player.spot[0] - 1 >= 0 and (floor.spaces[player.spot[0] - 1][player.spot[1]] == "." or floor.spaces[player.spot[0] - 1][player.spot[1]] == "d"):
-                    player.spot = (player.spot[0] - 1, player.spot[1])
-            elif event.key == pygame.K_SPACE:
-                pass
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    done = True
+                elif event.key == pygame.K_a: #Move left
+                    eToAttack = player.findAdjacentEnemy("left")
+                    if eToAttack:
+                        player.attack(eToAttack)
+                        print "Player attacks"
+                    elif player.spot[1] - 1 >= 0 and (floor.spaces[player.spot[0]][player.spot[1] - 1] == "." or floor.spaces[player.spot[0]][player.spot[1] - 1] == "d" or floor.spaces[player.spot[0]][player.spot[1] - 1] == "<" or floor.spaces[player.spot[0]][player.spot[1] - 1] == ">"):
+                        player.spot = (player.spot[0], player.spot[1] - 1)
+                elif event.key == pygame.K_s: #Move down
+                        eToAttack = player.findAdjacentEnemy("down")
+                        if eToAttack:
+                            player.attack(eToAttack)
+                            print "Player attacks"
+                        elif player.spot[0] + 1 < len(floor.spaces) and (floor.spaces[player.spot[0] + 1][player.spot[1]] == "." or floor.spaces[player.spot[0] + 1][player.spot[1]] == "d" or floor.spaces[player.spot[0] + 1][player.spot[1]] == "<" or floor.spaces[player.spot[0] + 1][player.spot[1]] == ">"):
+                            player.spot = (player.spot[0] + 1, player.spot[1])
+                elif event.key == pygame.K_d: #Move right
+                    eToAttack = player.findAdjacentEnemy("right")
+                    if eToAttack:
+                        player.attack(eToAttack)
+                        print "Player attacks"
+                    elif player.spot[1] + 1 < len(floor.spaces[player.spot[0]]) and (floor.spaces[player.spot[0]][player.spot[1] + 1] == "." or floor.spaces[player.spot[0]][player.spot[1] + 1] == "d" or floor.spaces[player.spot[0]][player.spot[1] + 1] == "<" or floor.spaces[player.spot[0]][player.spot[1] + 1] == ">"):
+                        player.spot = (player.spot[0], player.spot[1] + 1)
+                elif event.key == pygame.K_w: #Move up
+                    eToAttack = player.findAdjacentEnemy("up")
+                    if eToAttack:
+                        player.attack(eToAttack)
+                        print "Player attacks"
+                    elif player.spot[0] - 1 >= 0 and (floor.spaces[player.spot[0] - 1][player.spot[1]] == "." or floor.spaces[player.spot[0] - 1][player.spot[1]] == "d" or floor.spaces[player.spot[0] - 1][player.spot[1]] == "<" or floor.spaces[player.spot[0] - 1][player.spot[1]] == ">"):
+                        player.spot = (player.spot[0] - 1, player.spot[1])
+                elif event.key == pygame.K_SPACE:
+                    pass
+                elif event.key == pygame.K_UP and floor.spaces[player.spot[0]][player.spot[1]] == ">":
+                    print "FLOOR UP"
+                    floors[floorLevel - 1] = floor
+                    floorLevel += 1
+                    if len(floors) > floorLevel - 1:
+                        floor = floors[floorLevel - 1]
+                        enemies = []
+                        screen.fill(BLACK)
+                        floor.drawFloor()
+                        player.drawPlayer()
+                        pygame.display.flip()
+                        clock.tick(120)
+                        continue
+                    else:
+                        floor = Floor()
+                        floor.generate(int(len(floors[floorLevel - 2].spaces) * 2), int(len(floors[floorLevel - 2].spaces[0]) * 2))
+                        enemies = []
+                        floors.append(floor)
+                        player.spawnUp()
+                        screen.fill(BLACK)
+                        floor.drawFloor()
+                        player.drawPlayer()
+                        pygame.display.flip()
+                        clock.tick(120)
+                        continue
+                elif event.key == pygame.K_DOWN and floor.spaces[player.spot[0]][player.spot[1]] == "<" and floorLevel > 1:
+                    floors[floorLevel - 1] = floor
+                    floorLevel -= 1
+                    floor = floors[floorLevel - 1]
+                    enemies = []
+                    player.spawnDown()
+                    screen.fill(BLACK)
+                    floor.drawFloor()
+                    pygame.display.flip()
+                    clock.tick(120)
+                    continue
 
-            #Game logic
-            healthTick -= 1
+                #Game logic
 
-            #Player regenerates one health every 7 steps
-            if healthTick == 0:
-                if player.health < player.maxHealth:
-                    player.health += 1
-                healthTick = 7
+                #Decrement the healthTick every step
+                healthTick -= 1
 
-            #Enemies take turns
-            for e in enemies:
-                if e.health > 0:
-                    e.takeTurn()
-                else:
-                    e.die()
-                    enemies.remove(e)
+                #Leveling up
+                if player.exp >= (player.level ** 2) * 5:
+                    player.level += 1
+                    player.health += 2
+                    player.maxHealth += 2
+                    player.strength += 2
+                    player.defense += 2
 
-            #Spawn more enemies if below max
-            while len(enemies) < maxEnemies:
-                enemyNum = random.randint(0,1)
-                if enemyNum == 0:
-                    slime = Slime()
-                    slime.spawn()
-                    enemies.append(slime)
-                elif enemyNum == 1:
-                    rat = Rat()
-                    rat.spawn()
-                    enemies.append(rat)
+                #Player regenerates one health every 7 steps
+                if healthTick == 0:
+                    if player.health < player.maxHealth:
+                        player.health += 1
+                    healthTick = 7
 
-            print "P:", player.health
-            print "EXP:", player.exp
-            #End the game when health reaches zero
-            if player.health <= 0:
-                done = True
+                #Enemies take turns
+                for e in enemies:
+                    if e.health > 0:
+                        e.takeTurn()
+                    else:
+                        e.die()
+                        enemies.remove(e)
 
-            #Clear the screen
-            screen.fill(BLACK)
+                #Spawn more enemies if below max
+                while len(enemies) < maxEnemies:
+                    enemyNum = random.randint(0,1)
+                    if enemyNum == 0:
+                        slime = Slime()
+                        slime.spawn()
+                        enemies.append(slime)
+                    elif enemyNum == 1:
+                        rat = Rat()
+                        rat.spawn()
+                        enemies.append(rat)
 
-            #Game drawing
-            floor.drawFloor()
-            for e in enemies:
-                e.draw()
-                #slime.drawSlime()
-                #rat.drawRat()
-            player.drawPlayer()
+                print "P:", player.health
+                print "LEV:", player.level
+                print "EXP:", player.exp
+                print "FLOOR", floorLevel
 
-            #Draw the status bar
 
-            #Update the screen
-            pygame.display.flip()
+                #End the game when health reaches zero
+                if player.health <= 0:
+                    done = True
 
-            #Limit to 120 frames per second
-            clock.tick(120)
+                #Clear the screen
+                screen.fill(BLACK)
+
+                #Game drawing
+                floor.drawFloor()
+                for e in enemies:
+                    e.draw()
+                player.drawPlayer()
+
+                #Draw the status bar
+
+                #Update the screen
+                pygame.display.flip()
+
+                #Limit to 120 frames per second
+                clock.tick(120)
 
 pygame.quit()
